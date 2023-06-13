@@ -1,12 +1,12 @@
 package app
 
 import (
-	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"strings"
 
 	"github.com/spf13/viper"
@@ -24,7 +24,7 @@ func Auto(path string, filename string) {
 	var files []string
 	// 进行重命名操作
 	ext := filepath.Ext(filename)
-	fmt.Println(ext, "ext")
+
 	if ext == "" {
 		files = append(files, MoveToParentDir(path, filename)...)
 	} else {
@@ -49,6 +49,17 @@ func Auto(path string, filename string) {
 		cmd := exec.Command("rclone", "moveto", "-v", localPath, dstPath)
 		if err := cmd.Run(); err != nil {
 			log.Fatal(err)
+		}
+
+		videoRe := regexp.MustCompile(`\.(mp4|mov|avi|wmv|mkv|flv|webm|vob|rmvb|mpg|mpeg)$`)
+		if videoRe.MatchString(strings.ToLower(newName)) {
+			title := strings.Replace(dstPath, rclonePath, "", 1)
+
+			standardTitleRe := regexp.MustCompile(`S\d+E\d+`)
+			info := standardTitleRe.FindString(title)
+
+			message := getAnimeName(path) + " " + info + "入库成功 🎉"
+			Notification(message)
 		}
 	}
 }
@@ -85,4 +96,16 @@ func MoveToParentDir(path string, lastPath string) []string {
 	// TODO 剩下空文件夹就删掉
 
 	return filesNames
+}
+
+func getAnimeName(path string) string {
+	parts := strings.Split(path, "/")
+	for i := len(parts) - 1; i >= 0; i-- {
+		part := strings.ToLower(parts[i])
+		if !strings.Contains(part, "season") {
+			return parts[i]
+		}
+	}
+
+	return ""
 }
