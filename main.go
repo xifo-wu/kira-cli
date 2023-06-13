@@ -3,16 +3,14 @@ package main
 import (
 	"flag"
 	"fmt"
-	"log"
 	"os"
-	"os/exec"
-	"path/filepath"
-	"strings"
 
 	"github.com/spf13/viper"
+	"xifo.in/kira/app"
 )
 
-var CONFIG_PATH = "$HOME/.kira"
+// var CONFIG_PATH = "$HOME/.kira"
+var CONFIG_PATH = "/Users/xifo/Code/Projects/kira-cli"
 
 func init() {
 	viper.SetConfigName("config")
@@ -26,11 +24,6 @@ func init() {
 }
 
 func main() {
-	savePath := viper.GetString("save_path")
-	rclonePath := viper.GetString("rclone_path")
-	log.Println(savePath)
-	log.Println(rclonePath)
-
 	var filename string
 	var path string
 	autoCmd := flag.NewFlagSet("auto", flag.ExitOnError)
@@ -53,29 +46,7 @@ func main() {
 	case "auto":
 		autoCmd.Parse(os.Args[2:])
 
-		l := filepath.Join(path, filename)
-		newRclonePath := strings.Replace(l, savePath, rclonePath, 1)
-		fmt.Println(path, savePath, rclonePath)
-
-		fmt.Println(newRclonePath, "newRclonePath")
-
-		fmt.Println(l)
-		cmd := exec.Command("rclone", "moveto", "-v", l, newRclonePath)
-		if err := cmd.Run(); err != nil {
-			log.Fatal(err)
-		}
-
-	// case "foo":
-	// 	fooCmd.Parse(os.Args[2:])
-	// 	fmt.Println("subcommand 'foo'")
-	// 	fmt.Println("  enable:", *fooEnable)
-	// 	fmt.Println("  name:", *fooName)
-	// 	fmt.Println("  tail:", fooCmd.Args())
-	// case "bar":
-	// 	barCmd.Parse(os.Args[2:])
-	// 	fmt.Println("subcommand 'bar'")
-	// 	fmt.Println("  level:", *barLevel)
-	// 	fmt.Println("  tail:", barCmd.Args())
+		app.Auto(path, filename)
 	default:
 		fmt.Println("expected 'auto' subcommands")
 		os.Exit(1)
