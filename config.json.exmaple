@@ -3,4 +3,5 @@
   "rclone_path": "/Users/xifo/Downloads/rclone",
   "volume_path": "/Users/xifo/Downloads/local",
   "telegram_bot_token": "xxxxxxxxx:xxxxxxx"
+  "chat_id": "xxxxxxxxx"
 }
