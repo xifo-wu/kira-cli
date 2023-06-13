@@ -56,6 +56,12 @@ func GenerateSeasonAndEpisode(path string, filename string) string {
 
 	seasonNum, _ := strconv.Atoi(matchSeason[1])
 
+	standardTitleRe := regexp.MustCompile(`S\d+E\d+`)
+	// 符合 S01E01 时直接返回文件名，不需要重命名
+	if standardTitleRe.MatchString(filename) {
+		return filename
+	}
+
 	// 匹配集数
 	epRe := regexp.MustCompile(`(?i)( -? \d+|\[\d+]|\[\d+.?[vV]\d]|第\d+[话話集]|\[第?\d+[话話集]]|\[\d+.?END]|[e][p]?\d+|\[\d+\(\d+\)\]|\[\d+（\d+）\])`)
 	matchEpisode := epRe.FindString(filename)
