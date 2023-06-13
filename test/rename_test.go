@@ -25,4 +25,6 @@ func TestGenerateSeasonAndEpisode(t *testing.T) {
 	app.GenerateSeasonAndEpisode("/downloads/名侦探柯南：犯人犯泽先生 (2022)/Season 1", "[风车字幕组][名侦探柯南番外-犯人犯泽先生][第1-12集][合集版][1080P][繁体][MP4] [2.0GB]")
 
 	app.GenerateSeasonAndEpisode("/downloads/【我推的孩子】(2023)/Season 1", "[DMG][Oshi_no_Ko][07][1080P][GB].mp4")
+
+	app.GenerateSeasonAndEpisode("/downloads/亡骸游戏 (2023)/Season 1", "[LoliHouse] Dead Mount Death Play - 02 [WebRip 1080p HEVC-10bit AAC SRTx2].mkv")
 }

@@ -64,6 +64,8 @@ func Auto(path string, filename string) {
 
 		if message != "" {
 			Notification(message)
+		} else {
+			Notification(fmt.Sprintf("上传了 %s", dstPath))
 		}
 	}
 }
@@ -106,8 +108,6 @@ func getAnimeName(path string) string {
 	parts := strings.Split(path, "/")
 	for i := len(parts) - 1; i >= 0; i-- {
 		part := strings.ToLower(parts[i])
-		fmt.Println(part, i, "parts[i]parts[i]parts[i]parts[i]")
-
 		if strings.Contains(part, "season") && i-1 >= 0 {
 			return parts[i-1]
 		}
