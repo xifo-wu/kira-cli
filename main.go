@@ -9,8 +9,9 @@ import (
 	"xifo.in/kira/app"
 )
 
-// var CONFIG_PATH = "$HOME/.kira"
-var CONFIG_PATH = "/Users/xifo/Code/Projects/kira-cli"
+var CONFIG_PATH = "$HOME/.kira"
+
+// var CONFIG_PATH = "/Users/xifo/Code/Projects/kira-cli"
 
 func init() {
 	viper.SetConfigName("config")
