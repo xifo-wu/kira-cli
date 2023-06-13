@@ -45,10 +45,9 @@ func GenerateSeasonAndEpisode(path string, filename string) string {
 		return filename
 	}
 
-	_, lastPath := filepath.Split(path)
-
+	prefixPath, _ := filepath.Split(path)
 	re := regexp.MustCompile(`(?i)Season (\d+)`)
-	matchSeason := re.FindStringSubmatch(lastPath)
+	matchSeason := re.FindStringSubmatch(prefixPath)
 	if len(matchSeason) < 1 {
 		// 如果匹配不到 Season 就不需要生成季度信息和集数信息，直接返回原文件名
 		return filename

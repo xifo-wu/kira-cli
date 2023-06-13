@@ -1,6 +1,7 @@
 package app
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -36,27 +37,32 @@ func Auto(path string, filename string) {
 		if volumePath != "" {
 			localPath = strings.Replace(path, volumePath, savePath, 1)
 		}
+
 		newName := Rename(localPath, file)
 		// 参数传递进来的路径，如果是 docker 可能需要替换一下路径
-		src := filepath.Join(path, newName)
+		src := filepath.Join(localPath, newName)
 		dstPath := strings.Replace(src, savePath, rclonePath, 1)
 
 		log.Printf("原始路径: %s", localPath)
 		log.Printf("重命名后: %s", dstPath)
+
+		message := ""
+		videoRe := regexp.MustCompile(`\.(mp4|mov|avi|wmv|mkv|flv|webm|vob|rmvb|mpg|mpeg)$`)
+		if videoRe.MatchString(strings.ToLower(newName)) {
+			title := strings.Replace(src, savePath, "", 1)
+			standardTitleRe := regexp.MustCompile(`S\d+E\d+`)
+			info := standardTitleRe.FindString(title)
+
+			message = getAnimeName(path) + " " + info + " 入库成功 🎉"
+			log.Println(message, "message")
+		}
 
 		cmd := exec.Command("rclone", "moveto", "-v", localPath, dstPath)
 		if err := cmd.Run(); err != nil {
 			log.Fatal(err)
 		}
 
-		videoRe := regexp.MustCompile(`\.(mp4|mov|avi|wmv|mkv|flv|webm|vob|rmvb|mpg|mpeg)$`)
-		if videoRe.MatchString(strings.ToLower(newName)) {
-			title := strings.Replace(dstPath, rclonePath, "", 1)
-
-			standardTitleRe := regexp.MustCompile(`S\d+E\d+`)
-			info := standardTitleRe.FindString(title)
-
-			message := getAnimeName(path) + " " + info + " 入库成功 🎉"
+		if message != "" {
 			Notification(message)
 		}
 	}
@@ -100,8 +106,10 @@ func getAnimeName(path string) string {
 	parts := strings.Split(path, "/")
 	for i := len(parts) - 1; i >= 0; i-- {
 		part := strings.ToLower(parts[i])
-		if !strings.Contains(part, "season") {
-			return parts[i]
+		fmt.Println(part, i, "parts[i]parts[i]parts[i]parts[i]")
+
+		if strings.Contains(part, "season") && i-1 >= 0 {
+			return parts[i-1]
 		}
 	}
 
