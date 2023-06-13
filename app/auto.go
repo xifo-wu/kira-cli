@@ -32,15 +32,13 @@ func Auto(path string, filename string) {
 	}
 
 	for _, file := range files {
-		newName := Rename(path, file)
+		var localPath string
+		if volumePath != "" {
+			localPath = strings.Replace(path, volumePath, savePath, 1)
+		}
+		newName := Rename(localPath, file)
 		// 参数传递进来的路径，如果是 docker 可能需要替换一下路径
 		src := filepath.Join(path, newName)
-
-		localPath := src
-		if volumePath != "" {
-			localPath = strings.Replace(src, volumePath, savePath, 1)
-		}
-
 		dstPath := strings.Replace(src, savePath, rclonePath, 1)
 
 		log.Printf("原始路径: %s", localPath)
@@ -58,7 +56,7 @@ func Auto(path string, filename string) {
 			standardTitleRe := regexp.MustCompile(`S\d+E\d+`)
 			info := standardTitleRe.FindString(title)
 
-			message := getAnimeName(path) + " " + info + "入库成功 🎉"
+			message := getAnimeName(path) + " " + info + " 入库成功 🎉"
 			Notification(message)
 		}
 	}
