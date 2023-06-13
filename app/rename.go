@@ -11,8 +11,7 @@ import (
 )
 
 func Rename(path string, filename string) string {
-	// 判断 Filename 是否有扩展名，有时下载过来的是文件夹
-	// 需要移动到上级目录
+	// 判断 Filename 是否有扩展名，有时下载过来的是文件夹, 文件夹时不做处理
 	ext := filepath.Ext(filename)
 	if ext == "" {
 		return filename
