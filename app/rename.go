@@ -37,7 +37,8 @@ func GenerateSeasonAndEpisode(path string, filename string) string {
 	log.Println("======= 开始重命名 =======")
 	// TODO 支持合集
 	// 合集暂时跳过
-	collectionRe := regexp.MustCompile(`(?i)(\d+-\d+|第\d+-\d+集|合集)`)
+	// zip 文件也跳过重命名
+	collectionRe := regexp.MustCompile(`(?i)(\d+-\d+|第\d+-\d+集|合集|\.zip)`)
 	matchCollection := collectionRe.FindString(filename)
 
 	if matchCollection != "" {
