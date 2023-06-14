@@ -41,7 +41,7 @@ func Auto(path string, filename string) {
 		newName := Rename(localPath, file)
 		// 参数传递进来的路径，如果是 docker 可能需要替换一下路径
 		src := filepath.Join(localPath, newName)
-		dstPath := strings.Replace(localPath, savePath, rclonePath, 1)
+		dstPath := strings.Replace(src, savePath, rclonePath, 1)
 
 		log.Printf("原始路径: %s", localPath)
 		log.Printf("重命名后: %s", dstPath)
@@ -57,7 +57,7 @@ func Auto(path string, filename string) {
 			log.Println(message, "message")
 		}
 
-		cmd := exec.Command("rclone", "moveto", "-v", localPath, dstPath)
+		cmd := exec.Command("rclone", "moveto", "-v", src, dstPath)
 		if err := cmd.Run(); err != nil {
 			log.Fatal(err)
 		}

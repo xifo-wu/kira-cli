@@ -11,8 +11,6 @@ import (
 
 var CONFIG_PATH = "$HOME/.kira"
 
-// var CONFIG_PATH = "/Users/xifo/Code/Projects/kira-cli"
-
 func init() {
 	viper.SetConfigName("config")
 	viper.SetConfigType("json")
@@ -46,7 +44,6 @@ func main() {
 	switch os.Args[1] {
 	case "auto":
 		autoCmd.Parse(os.Args[2:])
-
 		app.Auto(path, filename)
 	default:
 		fmt.Println("expected 'auto' subcommands")
