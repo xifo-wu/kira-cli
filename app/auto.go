@@ -17,27 +17,31 @@ func Auto(path string, filename string) {
 	savePath := viper.GetString("save_path")
 	rclonePath := viper.GetString("rclone_path")
 	volumePath := viper.GetString("volume_path")
+	localPath := path
+	if volumePath != "" {
+		localPath = strings.Replace(path, volumePath, savePath, 1)
+	}
 
 	log.Println("##############################")
 	log.Println("####### Kira 开始运行 ########")
 	log.Println("##############################")
 
 	var files []string
-	// 进行重命名操作
-	ext := filepath.Ext(filename)
 
-	if ext == "" {
-		files = append(files, MoveToParentDir(path, filename)...)
+	fmt.Println(localPath)
+
+	file, err := os.Stat(filepath.Join(localPath, filename))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if !file.Mode().IsRegular() {
+		files = append(files, MoveToParentDir(localPath, filename)...)
 	} else {
 		files = append(files, filename)
 	}
 
 	for _, file := range files {
-		var localPath string
-		if volumePath != "" {
-			localPath = strings.Replace(path, volumePath, savePath, 1)
-		}
-
 		newName := Rename(localPath, file)
 		// 参数传递进来的路径，如果是 docker 可能需要替换一下路径
 		src := filepath.Join(localPath, newName)
