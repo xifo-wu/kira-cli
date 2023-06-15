@@ -47,7 +47,7 @@ func Auto(path string, filename string) {
 		src := filepath.Join(localPath, newName)
 		dstPath := strings.Replace(src, savePath, rclonePath, 1)
 
-		log.Printf("原始路径: %s", localPath)
+		log.Printf("原始路径: %s", src)
 		log.Printf("重命名后: %s", dstPath)
 
 		message := ""

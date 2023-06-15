@@ -46,15 +46,15 @@ func GenerateSeasonAndEpisode(path string, filename string) string {
 		return filename
 	}
 
-	prefixPath, _ := filepath.Split(path)
-	re := regexp.MustCompile(`(?i)Season (\d+)`)
-	matchSeason := re.FindStringSubmatch(prefixPath)
-	if len(matchSeason) < 1 {
+	if !strings.HasSuffix(path, "/") {
+		path += "/"
+	}
+
+	seasonNum, _ := strconv.Atoi(getSeasonNumber(path))
+	if seasonNum == 0 {
 		// 如果匹配不到 Season 就不需要生成季度信息和集数信息，直接返回原文件名
 		return filename
 	}
-
-	seasonNum, _ := strconv.Atoi(matchSeason[1])
 
 	standardTitleRe := regexp.MustCompile(`S\d+E\d+`)
 	// 符合 S01E01 时直接返回文件名，不需要重命名
@@ -75,4 +75,26 @@ func GenerateSeasonAndEpisode(path string, filename string) string {
 	renameFileName = prefix + " " + renameFileName
 
 	return renameFileName
+}
+
+func getSeasonNumber(path string) string {
+	re := regexp.MustCompile(`(?i)(?:Season (\d+)|S(\d+))`) // 编译正则表达式
+
+	// 匹配季数
+	match := re.FindStringSubmatch(path)
+
+	seasonNumber := ""
+	if len(match) < 1 {
+		fmt.Println("未匹配到季数")
+	} else {
+		for i, _ := range re.SubexpNames() {
+			if i != 0 && match[i] != "" {
+				seasonNumber = match[i]
+				break
+			}
+		}
+		fmt.Println("季数为：", seasonNumber)
+	}
+
+	return seasonNumber
 }
