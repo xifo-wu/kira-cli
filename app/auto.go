@@ -109,10 +109,12 @@ func MoveToParentDir(path string, lastPath string) []string {
 }
 
 func getAnimeName(path string) string {
+	re := regexp.MustCompile(`(?i)(?:Season (\d+)|S(\d+))`)
 	parts := strings.Split(path, "/")
 	for i := len(parts) - 1; i >= 0; i-- {
-		part := strings.ToLower(parts[i])
-		if strings.Contains(part, "season") && i-1 >= 0 {
+		match := re.FindStringSubmatch(parts[i])
+
+		if len(match) >= 1 && i-1 >= 0 {
 			return parts[i-1]
 		}
 	}

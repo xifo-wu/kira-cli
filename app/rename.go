@@ -87,7 +87,7 @@ func getSeasonNumber(path string) string {
 	if len(match) < 1 {
 		fmt.Println("未匹配到季数")
 	} else {
-		for i, _ := range re.SubexpNames() {
+		for i := range re.SubexpNames() {
 			if i != 0 && match[i] != "" {
 				seasonNumber = match[i]
 				break
