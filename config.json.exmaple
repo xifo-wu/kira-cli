@@ -10,7 +10,8 @@
   "data": {
     "亡骸游戏 (2023)/Season 1": {
       "resource_id": 1,
-      "remark_format": "简繁内封 - 更新至 %s"
+      "remark_format": "简繁内封 - 更新至 %s",
+      "gt_send_at": "2023-06-20 10:30:30"
     }
   }
 }

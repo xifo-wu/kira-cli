@@ -42,7 +42,7 @@ func Auto(path string, filename string) {
 	}
 
 	for _, file := range files {
-		newName := Rename(localPath, file)
+		newName, fileSize := Rename(localPath, file)
 		// 参数传递进来的路径，如果是 docker 可能需要替换一下路径
 		src := filepath.Join(localPath, newName)
 		dstPath := strings.Replace(src, savePath, rclonePath, 1)
@@ -59,7 +59,7 @@ func Auto(path string, filename string) {
 
 			message = getAnimeName(path) + " " + info + " 入库成功 🎉"
 			// JSON 已配置的话推送消息到 TG 群里
-			ChannelNotification(info, path)
+			ChannelNotification(info, path, fileSize)
 			log.Println(message, "message")
 		}
 

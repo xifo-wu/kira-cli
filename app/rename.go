@@ -10,11 +10,11 @@ import (
 	"strings"
 )
 
-func Rename(path string, filename string) string {
+func Rename(path string, filename string) (string, float64) {
 	// 判断 Filename 是否有扩展名，有时下载过来的是文件夹, 文件夹时不做处理
 	ext := filepath.Ext(filename)
 	if ext == "" {
-		return filename
+		return filename, 0
 	}
 
 	newFilename := GenerateSeasonAndEpisode(path, filename)
@@ -22,7 +22,7 @@ func Rename(path string, filename string) string {
 	oldPath := filepath.Join(path, filename)
 	newPath := filepath.Join(path, newFilename)
 
-	_, err := os.Stat(oldPath)
+	fileInfo, err := os.Stat(oldPath)
 	if os.IsNotExist(err) {
 		log.Println("[error] 资源不存在")
 		os.Exit(1)
@@ -30,7 +30,10 @@ func Rename(path string, filename string) string {
 
 	os.Rename(oldPath, newPath)
 
-	return newFilename
+	fileSize := float64(fileInfo.Size()) / (1024 * 1024 * 1024)
+	log.Printf("文件大小： %.2f GB\n", fileSize)
+
+	return newFilename, fileSize
 }
 
 func GenerateSeasonAndEpisode(path string, filename string) string {
@@ -93,7 +96,7 @@ func getSeasonNumber(path string) string {
 				break
 			}
 		}
-		fmt.Println("季数为：", seasonNumber)
+		fmt.Println("当前季数：", seasonNumber)
 	}
 
 	return seasonNumber

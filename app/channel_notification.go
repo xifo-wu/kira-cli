@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/spf13/viper"
 )
@@ -15,7 +16,7 @@ var (
 	client = &http.Client{}
 )
 
-func ChannelNotification(info string, path string) {
+func ChannelNotification(info string, path string, fileSize float64) {
 	volumePath := viper.GetString("volume_path")
 	mediaDir := strings.Replace(path, volumePath, "", 1)
 	telegramBotToken := viper.GetString("telegram_bot_token")
@@ -32,18 +33,29 @@ func ChannelNotification(info string, path string) {
 		return
 	}
 
+	gtSendAt, _ := resource["gt_send_at"]
+	if gtSendAt != nil {
+		location, err := time.LoadLocation("Asia/Shanghai")
+		targetTime, err := time.ParseInLocation("2006-01-02 15:04:05", gtSendAt.(string), location)
+		currentTime := time.Now().In(location)
+
+		// 如果解析错误直接忽略这个参数
+		if err == nil && currentTime.Before(targetTime) {
+			return
+		}
+	}
+
 	payload := make(map[string]interface{})
 	payload["chat_id"] = channelId
 	payload["telegram_bot_token"] = telegramBotToken
 	payload["remark"] = fmt.Sprintf(resource["remark_format"].(string), info)
 	payload["resource_id"] = resource["resource_id"]
+	payload["share_size"] = fileSize
 
 	payloadBytes, err := json.Marshal(payload)
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	fmt.Println(payloadBytes, "payloadBytes")
 
 	req, err := http.NewRequest("POST", webApi, bytes.NewBuffer(payloadBytes))
 	if err != nil {
