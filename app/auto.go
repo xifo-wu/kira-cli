@@ -58,6 +58,8 @@ func Auto(path string, filename string) {
 			info := standardTitleRe.FindString(title)
 
 			message = getAnimeName(path) + " " + info + " 入库成功 🎉"
+			// JSON 已配置的话推送消息到 TG 群里
+			ChannelNotification(info, path)
 			log.Println(message, "message")
 		}
 

@@ -1,7 +1,16 @@
 {
-  "save_path": "/Users/xifo/Downloads/local",
-  "rclone_path": "/Users/xifo/Downloads/rclone",
-  "volume_path": "/Users/xifo/Downloads/local",
+  "save_path": "/xxx/Downloads/local",
+  "rclone_path": "/xxx/Downloads/rclone",
+  "volume_path": "/xxx/Downloads/local",
   "telegram_bot_token": "xxxxxxxxx:xxxxxxx"
-  "chat_id": "xxxxxxxxx"
+  "chat_id": "xxxxxxxxx",
+  "channel_id": "@xxxx",
+  "web_api": "http://xxx/api/v1/manager/xxx",
+  "api_token": "xxx.xxx.xxxxxxx",
+  "data": {
+    "亡骸游戏 (2023)/Season 1": {
+      "resource_id": 1,
+      "remark_format": "简繁内封 - 更新至 %s"
+    }
+  }
 }
