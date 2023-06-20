@@ -8,6 +8,8 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/spf13/viper"
 )
 
 func Rename(path string, filename string) (string, float64) {
@@ -59,6 +61,21 @@ func GenerateSeasonAndEpisode(path string, filename string) string {
 		return filename
 	}
 
+	log.Println(path, "path")
+	savePath := viper.GetString("save_path")
+	mediaDir := strings.Replace(path, savePath, "", 1)
+	trimmedPath := strings.ToLower(strings.Trim(mediaDir, "/"))
+	mediaData := viper.GetStringMap("data")
+
+	resource, ok := mediaData[trimmedPath].(map[string]interface{})
+	eqDiffNum := 0
+	if ok {
+		if f, ok := resource["eq_diff_num"].(float64); ok {
+			// 将 float64 值转换为 int 值
+			eqDiffNum = int(f)
+		}
+	}
+
 	standardTitleRe := regexp.MustCompile(`S\d+E\d+`)
 	// 符合 S01E01 时直接返回文件名，不需要重命名
 	if standardTitleRe.MatchString(filename) {
@@ -72,7 +89,7 @@ func GenerateSeasonAndEpisode(path string, filename string) string {
 	episodeRe := regexp.MustCompile(`\d+`)
 	episodeNum, _ := strconv.Atoi(episodeRe.FindString(matchEpisode))
 
-	prefix := fmt.Sprintf("S%02dE%02d", seasonNum, episodeNum)
+	prefix := fmt.Sprintf("S%02dE%02d", seasonNum, episodeNum-eqDiffNum)
 
 	renameFileName := strings.Replace(filename, matchEpisode, "", 1)
 	renameFileName = prefix + " " + renameFileName
