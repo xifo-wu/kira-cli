@@ -33,6 +33,10 @@ func ChannelNotification(info string, path string, fileSize float64) {
 		return
 	}
 
+	if _, ok = resource["resource_id"]; !ok {
+		return
+	}
+
 	gtSendAt, _ := resource["gt_send_at"]
 	if gtSendAt != nil {
 		location, err := time.LoadLocation("Asia/Shanghai")
