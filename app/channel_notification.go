@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 	"strings"
-	"time"
 
 	"github.com/spf13/viper"
 )
@@ -23,8 +22,6 @@ func ChannelNotification(info string, path string, fileSize float64) {
 	channelId := viper.GetString("channel_id")
 	apiToken := viper.GetString("api_token")
 	webApi := viper.GetString("web_api")
-	disableLtSendAt := viper.GetString("disable_lt_send_at")
-
 	trimmedPath := strings.ToLower(strings.Trim(mediaDir, "/"))
 
 	mediaData := viper.GetStringMap("data")
@@ -36,17 +33,6 @@ func ChannelNotification(info string, path string, fileSize float64) {
 
 	if _, ok = resource["resource_id"]; !ok {
 		return
-	}
-
-	if disableLtSendAt != "" {
-		location, err := time.LoadLocation("Asia/Shanghai")
-		targetTime, err := time.ParseInLocation("2006-01-02 15:04:05", disableLtSendAt, location)
-		currentTime := time.Now().In(location)
-
-		// 如果解析错误直接忽略这个参数
-		if err == nil && currentTime.Before(targetTime) {
-			return
-		}
 	}
 
 	payload := make(map[string]interface{})

@@ -52,15 +52,12 @@ func Auto(path string, filename string) {
 
 		var notificationInfo string
 		message := ""
-		needChannelNotification := false
-
 		videoRe := regexp.MustCompile(`\.(mp4|mov|avi|wmv|mkv|flv|webm|vob|rmvb|mpg|mpeg)$`)
 		if videoRe.MatchString(strings.ToLower(newName)) {
 			title := strings.Replace(src, savePath, "", 1)
 			standardTitleRe := regexp.MustCompile(`S\d+E\d+`)
 			info := standardTitleRe.FindString(title)
 			notificationInfo = info
-			needChannelNotification = true
 			message = getAnimeName(path) + " " + info + " 入库成功 🎉"
 			log.Println(message, "message")
 		}
@@ -72,13 +69,9 @@ func Auto(path string, filename string) {
 
 		if message != "" {
 			Notification(message)
+			ChannelNotification(notificationInfo, path, fileSize)
 		} else {
 			Notification(fmt.Sprintf("上传了 %s", dstPath))
-		}
-
-		if needChannelNotification {
-			// JSON 已配置的话推送消息到 TG 群里
-			ChannelNotification(notificationInfo, path, fileSize)
 		}
 	}
 }
